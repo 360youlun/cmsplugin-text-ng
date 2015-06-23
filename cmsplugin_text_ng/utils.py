@@ -16,9 +16,16 @@ def ensure_template_arg(func):
     return wraps(func)(_dec)
 
 
+def _get_nodelist(tpl):
+    if hasattr(tpl, 'template'):
+        return tpl.template.nodelist
+    else:
+        return tpl.nodelist
+
+
 @ensure_template_arg
 def get_variables_from_template(template):
-    variable_nodes = [n for n in template.nodelist if isinstance(n, DefineNode)]
+    variable_nodes = [n for n in _get_nodelist(template) if isinstance(n, DefineNode)]
     variables = SortedDict()
     for node in variable_nodes:
         if node.variable_name in variables:
